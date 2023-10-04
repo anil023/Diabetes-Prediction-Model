@@ -11,13 +11,12 @@ Pregnancy-induced diabetes presents significant risks, and thus, it requires car
 <!--OBJECTIVE-->
 Data sourced from the National Institute of Diabetes and Digestive and Kidney Diseases is accessible on Kaggle through the following [(link)](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database "Kaggle Link to the Dataset"). This dataset pertains to females aged at least 21 years from the Pima Indian heritage. The primary objective of this repository is to employ machine learning models in the R language to diagnostically predict whether a patient has diabetes. This prediction is based on the dataset's provided characteristic measurements. We will explore various classification models, both linear and nonlinear, suitable for binary classification and some appropriate for multiple-class classification, for the purpose of comparison.
 <!--EVALUATION CRITERIA-->
-To evaluate the performance of these models, we will employ Receiver Operating Characteristic (ROC) Curves and the Area Under the Curve (AUC) metric. The AUC metric quantifies the degree of separability between classes and their distinguishability. Subsequently, the top two models selected from this training dataset comparison will undergo evaluation using the test set. The final choice of the best model will be based on the comparison of AUC metrics.
+To evaluate the performance of these models, we will employ Receiver Operating Characteristic (ROC) Curves and the Area Under the Curve (AUC) metric along with sensitivity and specificity. The AUC metric quantifies the degree of separability between classes and their distinguishability. Comparing sensitivity and specificity will help us optimize for false negatives and false positives. Subsequently, the top two models selected from the training dataset models will undergo evaluation using the test dataset. The final choice of the best model will be based on the comparison in a similar fashion.
 
 
 ## UNDERSTANDING THE DATA
 <!--FILES IN THE REPOSITORY-->
 - **[Diabetes-Prediction-Model.R](https://github.com/anil023/R_Diabetes-Prediction-Model/blob/fd39aeecc75a8d1fda166d1b0c648c6e55619c49/Diabetes-Prediction-Model.R "Link to the File")** : R-code file from the analysis
-- **[Diabetes-Prediction-Model.pdf](https://github.com/anil023/R_Diabetes-Prediction-Model/blob/fd39aeecc75a8d1fda166d1b0c648c6e55619c49/Diabetes-Prediction-Model.pdf "Link to the File")** : report for the analysis
 - **[diabetes.csv](https://github.com/anil023/R_Diabetes-Prediction-Model/blob/fd39aeecc75a8d1fda166d1b0c648c6e55619c49/diabetes.csv "Link to the File")** : raw data file exported from Kaggle
 <!--DATA TYPES-->
 The raw dataset contains data from 768 patients, comprising 8 predictor variables and one response variable. In our model, the response variable of interest is labeled as Outcome. It is initially presented as a binary numerical variable but is later transformed into a categorical variable during our analysis. In this transformation, a value of 0 signifies the absence of diabetes, while a value of 1 indicates that the patient has diabetes. There are no categorical predictors and eight (8) continuous predictors: 
@@ -31,10 +30,10 @@ Insulin|Serum insulin levels(µh/ml)|Numeric|[0,846]|
 BMI|Body mass index(kg/m)|Numeric|[0,67.1]|
 DiabetesPedigreeFunction|Diabetes pedigree function|Numeric|[0.078,2.42]|
 Age|Age(years)|Numeric|[21,81]|
-<!--DATA DISTRIBUTION-->
+<!--NUMERICAL DATA DISTRIBUTION-->
 Numerical Summary:  
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/d9772cc5-99a6-48de-9d1f-87f18a46380b "Numerical Summary of all Variables")  
-
+<!--GRAPHICAL DATA DISTRIBUTION-->
 Graphical Summary:
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/de8a5227-185f-42d8-be2d-be310a3eedf9 "Scatter-Plot Matrix")  
 Upon observing the scatterplot matrix, we notice a slight positive correlation between [Glucose and Insulin] and [SkinThickness and BMI]. We should investigate this further during the data pre-processing stage.  
@@ -49,8 +48,8 @@ We can conclude that the majority of predictors have outliers in the data. To mi
 <!--MISSING VALUES/PREDICTOR REDUCTION-->
 In the dataset, there were no missing values; therefore, no imputation or deletion was necessary. Investigating predictors with zero or near-zero variance is a useful procedure to determine whether any predictor should be removed. Since all predictors in this dataset were continuous, there were no predictors with variances close to zero. Another technique to assess the need for predictor reduction is Principal Component Analysis (PCA). After applying PCA to the Pima Indian data, the results revealed that 8 components were needed to explain 95% of the variance. Consequently, no predictors were removed.
 <!--SKEWNESS-->
-One of the assumptions of a linear relationship is that predictors have a symmetric distribution. The table below shows the skewness statistics for the original raw dataset:
-<!--
+One of the assumptions for the linear relationship models is that predictors have a symmetric distribution. The table below shows the skewness statistics for the original raw dataset:
+<!--SKEWNESS TABLE BEFORE TRANSFORMATION
 |PREDICTOR VARIABLES|RAW DATA SKEWNESS|
 |:--:|:--:|
 Pregnancies|0.9|
@@ -83,40 +82,31 @@ Another assumption related to a linear relationship is the absence of multicolli
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/1f8b046b-f4aa-48b7-8392-c8b9d8e6bf8c "Correlation Plot")
 
 
-<!--
-## EDA
-      SUMMARIZE
-      BETTER UNDERSTANDING OF THE DATA
-      UNCOVER RELATIONSHIPS BETWEEN VARIABLES
-      EXTRACT VARIABLES
--->
 ## MODEL DEVELOPMENT
 <!--DATA SPLITTING-->
 Splitting a dataset into training and testing sets is a critical step in machine learning to prevent overfitting, assess model performance and make informed decisions about model selection and parameter tuning. After preprocessing the data, we partition the dataset, allocating 80% to the training set and 20% to the testing set. This split resulted in 615 observations in the training set.
 <!--RESAMPLING METHODOLOGY-->
 Stratified Random Sampling was employed based on the response variable(Outcome) because the distribution among the classes in the response variable is imbalanced (as shown below). The training set plot below illustrates that the classes have a similar distribution to the full dataset. Given the small sample size, the choice of 'leave-group-out' cross-validation was made to mitigate bias and maintain low variance.
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/32ae8533-6d78-4c0d-b71d-bbca58c5b711 "Full vs Training Dataset: Class Distribution")    
-Training Set Evaluation:  
-Each of the machine learning/statistical models has its strengths and weaknesses, making them suitable for different types of problems and datasets. The choice of model depends on the specific problem, namely the nature of the data, the desired trade-offs between factors like interpretability, accuracy, and computational complexity. We will train several models on the training dataset, and compare them on the basis of few metrics:  
-- **Logistic Regression (Logistic)**: Logistic regression is a powerful statistical model used for binary classification. It is computationally efficient and the model coefficients are interpretable. It'll be suitable for our dataset as it's pre-processed to remove outliers and doesn't have high correlation among variables.  
+<!--TRAINING MODELS--> 
+Each of the machine learning/statistical models has its strengths and weaknesses, making them suitable for different types of problems and datasets. The choice of model depends on the specific problem, namely the nature of the data, the desired trade-offs between factors like interpretability, accuracy, and computational complexity. We will train several models on the training dataset and compare them on the basis of ROC and few other metrics:  
+- **Logistic Regression (Logistic)**: Logistic regression is a powerful statistical model used for binary classification. It is computationally efficient and the model coefficients are interpretable. It'll be suitable for our dataset as it's pre-processed to remove outliers and doesn't have high correlation among variables. 
 - **Linear Discriminant Analysis (LDA)**: LDA is a dimensionality reduction and classification model used for binary classification and is interpretable. It finds linear combinations of features that best separate different classes while preserving as much variance as possible within each class.
 - **Partial Least Squares Discriminant Analysis (PLSDA)**: PLSDA is also a dimensionality reduction supervised model used for classification and regression. It combines features into linear combinations to maximize the covariance between classes and the features. The model requires parameter tuning: number of variables to use.
 - **Penalized Generalized Linear Model (Penalized GLM)**: This is a statistical model which extends traditional GLM models by adding penalties to the loss function to control model complexity. The penalty terms help with variable selection, prevents overfitting and helps handling multicollinearity. Tuning parameter process is more complex for the model and assumes linear relationship between predictors and response variable.
-- **Multiple Discriminant Analysis (MDA)**: MDA is an extension of LDA that can handle multiple classes. Its a reliable and interpretable statistical model that achieves dimensional reduction and variable selection optimaly. But these models are sensitive to outliers, non-normalized data, assumptions of normality and that the classes are linearly separable.
+- **Mixture Discriminant Analysis (MDA)**: MDA is an extension of LDA that can handle multiple classes. Its a reliable and interpretable statistical model that achieves dimensional reduction and variable selection optimaly. But these models need large datasets and are computationally intensive.
 - **Neural Network (NN)**: NN are powerful tools for two-class classification tasks due to their ability to model complex relationships and learn features from data. However, models with multiple layers are computationally expensive and need substatntial amount of data and may lack interpretability.
-- **Fisher's Discriminant Analysis (FDA)**: FDA finds a linear combination of the original variables such that the variance between the classes is maximized while the variance within each class is minimized. .
-
-
-
-
-
-- **Support Vector Machine (SVM)**: SVM is a powerful classification and regression technique. It aims to find a hyperplane that best separates classes or predicts a target variable while maximizing the margin between data points and the hyperplane.
-- **k-Nearest Neighbors (k-NN)**: k-NN is a simple and intuitive classification algorithm. It assigns a class label to an instance based on the majority class among its k nearest neighbors in the feature space.
-- **Naive Bayes**: Naive Bayes is a probabilistic classification algorithm based on Bayes' theorem. It's particularly useful for text classification tasks like spam detection and sentiment analysis. It assumes that features are conditionally independent given the class label, which is a "naive" but often effective assumption.
-
+- **Flexible Discriminant Analysis (FDA)**: FDA finds a linear combination of the original variables such that the variance between the classes is maximized while the variance within each class is minimized. The model is interpretable and also helps noise reduction through dimensionality reduction. It is sensitive to outliers, non-linear relationships in the data and assumes gaussian distribbution within each class.
+- **Support Vector Machine (SVM)**: SVM is a powerful supervised machine learning model for classification and regression that seeks to find an optimal hyperplane that maximizes the margin between two classes in the feature space. It is robust to outliers, non-linear and high dimesnional data. The model is sensitive to parameter tuning and computationally intensive hence not suitable for large datasets.
+- **k-Nearest Neighbors (k-NN)**: k-NN is a machine learning model for classification and regression tasks; it finds the k nearest data points(neighbors) to a given data point in the feature space and then making a prediction based on the majority class of those k neighbors. It's a simple, adaptable, versatile and interpretable model but computationally complex, sensitive to high dimensional and noisy data and imbalance in the classes.
+- **Naive Bayes**: Naive Bayes is a probabilistic machine learning classification model based on Bayes' theorem. It assumes that the presence or absence of a particular feature is unrelated to the presence or absence of any other feature, given the class label. It's a simple and computationally efficient, interpretable model. It is sensitive to imbalanced data within classes, continuos data, scaling of the data.  
+<!--TRAINING MODEL COMPARISON-->
+Training Model Comparison:
+![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/a18e1d0d-f0d7-48ef-99da-183e2d3802d8 "Training: ROC Curve Comparison")
+<!--TABLE: TRAINING MODEL COMPARISON-->
 |MODEL|SENSITIVITY(in%)|SPECIFICITY(in%)|AUC(in%)|ACCURACY(in%)|
 |:--:|:--:|:--:|:--:|:--:|
-$${\color{yellow}LOGISTIC}$$|86|60.9|83.6|77.3|
+LOGISTIC|86|60.9|83.6|77.3|
 **$${\color{lime}LDA}$$**|85.2|64.5|84.2|78.1|
 PLSDA|84.9|62|83|77|
 PENALIZED GLM|86.3|60.2|38.7|77.2|
@@ -126,19 +116,32 @@ FDA|83.8|66.2|82.6|77.7|
 SVM|84.3|60.7|81.7|76.1|
 KNN|84.5|61.7|80.6|76.6|
 NAIVE BAYES|77.9|74.4|82.9|76.7|  
-
-![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/9f2319ca-d04c-475c-8a46-172943e3cc42 "Training: ROC Curve Comparison")
-       
-       
-<!--       
-       MODEL
-       MODEL EVALUATION - VISUALIZATION
-       R2 AND MSE FOR EVALUATION
-       PREDICTION AND DECISION MAKING
-       
-
--->
-
-
+<!--ANALYSIS-->
+We will compare the various models based on ROC curves and a few other metrics. For this problem, we would like to optimize both false positives and false negatives. Comparing the ROC plots for all the models in conjunction with sensitivity, specificity, and AUC metrics proves that the LDA and Logistic models are the best-performing training models. Penalized GLM and Neural Network models achieve the highest sensitivity levels but also have about a 10% lower specificity among the models, thus increasing the chances of false positives. 
+<!--TESTING MODEL COMPARISON-->
+Testing Model Comparison:
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/8337828a-6de7-4d54-a917-8b80b2f0aaa0 "Testing: ROC Curve Comparison")
+<!--TABLE: TESTING MODEL COMPARISON-->
+|MODEL|SENSITIVITY(in%)|SPECIFICITY(in%)|AUC(in%)|ACCURACY(in%)|
+|:--:|:--:|:--:|:--:|:--:|
+**$${\color{lime}LOGISTIC}$$**|62.3|87|80.6|78.4|
+LDA|62.3|84|81.2|76.5|
+<!--ANALYSIS-->
+We will compare the performance of the logistic and LDA models on the test set based on ROC curves and a few other metrics, similar to the evaluation of the training set models. Since both sensitivity and AUC metrics are similar between the two models, we conclude that the Logistic Regression model is the better choice, as it provides higher specificity and, therefore, predicts with fewer false positives.. 
+
+
+## SUMMARY
+The final model chosen was the Logistic Regression Model, with an accuracy rate of 78.4%, sensitivity of 62.3%, and specificity of 87%. We should understand that due to the relatively low sensitivity, the model is prone to producing many false negatives, an outcome that should be avoided. On the other hand, the specificity is considerably higher, which means the model would produce fewer false positive results, aligning with one of the goals of a useful model.
+
+![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/69420f12-92d9-4188-97aa-665ebf98a940 "Imprtant Variables")
+
+Predicting the onset of gestational diabetes among Pima women, who have historically been the most susceptible, is of immense significance. Since at a minimum, BMI and glucose levels can be controlled, preventive measures such as nutrition and weight counseling can be widely implemented among the population to prevent future high-risk pregnancies.
+
+---
+
+THANKS  
+Anil Raju  
+[LinkedIn](https://www.linkedin.com/in/rajuanil/)
+
+
 
