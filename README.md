@@ -34,7 +34,8 @@ Age|Age(years)|Numeric|[21,81]|
 <!--DATA DISTRIBUTION-->
 Numerical Summary:  
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/d9772cc5-99a6-48de-9d1f-87f18a46380b "Numerical Summary of all Variables")  
-Visual Summary:
+
+Graphical Summary:
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/de8a5227-185f-42d8-be2d-be310a3eedf9 "Scatter-Plot Matrix")  
 Upon observing the scatterplot matrix, we notice a slight positive correlation between [Glucose and Insulin] and [SkinThickness and BMI]. We should investigate this further during the data pre-processing stage.  
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/2d94504d-b05b-4e85-acf5-56ab10a617a2 "Histogram of Predictors")  
@@ -96,17 +97,22 @@ Splitting a dataset into training and testing sets is a critical step in machine
 Stratified Random Sampling was employed based on the response variable(Outcome) because the distribution among the classes in the response variable is imbalanced (as shown below). The training set plot below illustrates that the classes have a similar distribution to the full dataset. Given the small sample size, the choice of 'leave-group-out' cross-validation was made to mitigate bias and maintain low variance.
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/32ae8533-6d78-4c0d-b71d-bbca58c5b711 "Full vs Training Dataset: Class Distribution")    
 Training Set Evaluation:  
-We will train several models on the training dataset, and compare them on the namely:  
-**Logistic Regression (Logistic)**: 
-**Linear Discriminant Analysis (LDA)**: 
-**Partial Least Squares Discriminant Analysis (PLSDA)**: 
-**Penalized Generalized Linear Model (Penalized GLM)**: 
-**Multiple Discriminant Analysis (MDA)**: 
-**Neural Network (NN)**: 
-**Fisher's Discriminant Analysis (FDA)**: 
-**Support Vector Machine (SVM)**: 
-**k-Nearest Neighbors (k-NN)**: 
-**Naive Bayes**: 
+Each of the machine learning/statistical models has its strengths and weaknesses, making them suitable for different types of problems and datasets. The choice of model depends on the specific problem, namely the nature of the data, the desired trade-offs between factors like interpretability, accuracy, and computational complexity. We will train several models on the training dataset, and compare them on the basis of few metrics:  
+- **Logistic Regression (Logistic)**: Logistic regression is a powerful statistical model used for binary classification. It is computationally efficient and the model coefficients are interpretable. It'll be suitable for our dataset as it's pre-processed to remove outliers and doesn't have high correlation among variables.  
+- **Linear Discriminant Analysis (LDA)**: LDA is a dimensionality reduction and classification model used for binary classification and is interpretable. It finds linear combinations of features that best separate different classes while preserving as much variance as possible within each class.
+- **Partial Least Squares Discriminant Analysis (PLSDA)**: PLSDA is also a dimensionality reduction supervised model used for classification and regression. It combines features into linear combinations to maximize the covariance between classes and the features. The model requires parameter tuning: number of variables to use.
+- **Penalized Generalized Linear Model (Penalized GLM)**: This is a statistical model which extends traditional GLM models by adding penalties to the loss function to control model complexity. The penalty terms help with variable selection, prevents overfitting and helps handling multicollinearity. Tuning parameter process is more complex for the model and assumes linear relationship between predictors and response variable.
+- **Multiple Discriminant Analysis (MDA)**: MDA is an extension of LDA that can handle multiple classes. Its a reliable and interpretable statistical model that achieves dimensional reduction and variable selection optimaly. But these models are sensitive to outliers, non-normalized data, assumptions of normality and that the classes are linearly separable.
+- **Neural Network (NN)**: NN are powerful tools for two-class classification tasks due to their ability to model complex relationships and learn features from data. However, models with multiple layers are computationally expensive and need substatntial amount of data and may lack interpretability.
+- **Fisher's Discriminant Analysis (FDA)**: FDA finds a linear combination of the original variables such that the variance between the classes is maximized while the variance within each class is minimized. .
+
+
+
+
+
+- **Support Vector Machine (SVM)**: SVM is a powerful classification and regression technique. It aims to find a hyperplane that best separates classes or predicts a target variable while maximizing the margin between data points and the hyperplane.
+- **k-Nearest Neighbors (k-NN)**: k-NN is a simple and intuitive classification algorithm. It assigns a class label to an instance based on the majority class among its k nearest neighbors in the feature space.
+- **Naive Bayes**: Naive Bayes is a probabilistic classification algorithm based on Bayes' theorem. It's particularly useful for text classification tasks like spam detection and sentiment analysis. It assumes that features are conditionally independent given the class label, which is a "naive" but often effective assumption.
 
 |MODEL|SENSITIVITY(in%)|SPECIFICITY(in%)|AUC(in%)|ACCURACY(in%)|
 |:--:|:--:|:--:|:--:|:--:|
