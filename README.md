@@ -32,7 +32,7 @@ BMI|Body mass index(kg/m)|Numeric|[0,67.1]|
 DiabetesPedigreeFunction|Diabetes pedigree function|Numeric|[0.078,2.42]|
 Age|Age(years)|Numeric|[21,81]|
 <!--DATA DISTRIBUTION-->
-Numerical Summary:
+Numerical Summary:  
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/d9772cc5-99a6-48de-9d1f-87f18a46380b "Numerical Summary of all Variables")  
 Visual Summary:
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/de8a5227-185f-42d8-be2d-be310a3eedf9 "Scatter-Plot Matrix")  
@@ -91,22 +91,48 @@ Another assumption related to a linear relationship is the absence of multicolli
 -->
 ## MODEL DEVELOPMENT
 <!--DATA SPLITTING-->
-After preprocessing the data, we partition the dataset, allocating 80% to the training set and 20% to the testing set. This split resulted in 615 observations in the training set.
+Splitting a dataset into training and testing sets is a critical step in machine learning to prevent overfitting, assess model performance and make informed decisions about model selection and parameter tuning. After preprocessing the data, we partition the dataset, allocating 80% to the training set and 20% to the testing set. This split resulted in 615 observations in the training set.
 <!--RESAMPLING METHODOLOGY-->
 Stratified Random Sampling was employed based on the response variable(Outcome) because the distribution among the classes in the response variable is imbalanced (as shown below). The training set plot below illustrates that the classes have a similar distribution to the full dataset. Given the small sample size, the choice of 'leave-group-out' cross-validation was made to mitigate bias and maintain low variance.
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/32ae8533-6d78-4c0d-b71d-bbca58c5b711 "Full vs Training Dataset: Class Distribution")    
-Training Set Evaluation:
+Training Set Evaluation:  
+We will train several models on the training dataset, and compare them on the namely:  
+**Logistic Regression (Logistic)**: 
+**Linear Discriminant Analysis (LDA)**: 
+**Partial Least Squares Discriminant Analysis (PLSDA)**: 
+**Penalized Generalized Linear Model (Penalized GLM)**: 
+**Multiple Discriminant Analysis (MDA)**: 
+**Neural Network (NN)**: 
+**Fisher's Discriminant Analysis (FDA)**: 
+**Support Vector Machine (SVM)**: 
+**k-Nearest Neighbors (k-NN)**: 
+**Naive Bayes**: 
 
+|MODEL|SENSITIVITY(in%)|SPECIFICITY(in%)|AUC(in%)|ACCURACY(in%)|
+|:--:|:--:|:--:|:--:|:--:|
+$${\color{yellow}LOGISTIC}$$|86|60.9|83.6|77.3|
+**$${\color{lime}LDA}$$**|85.2|64.5|84.2|78.1|
+PLSDA|84.9|62|83|77|
+PENALIZED GLM|86.3|60.2|38.7|77.2|
+MDA|81.9|66.9|83.1|76.7|
+NEURAL NETWORK|86.2|60.1|79.3|77.2|
+FDA|83.8|66.2|82.6|77.7|
+SVM|84.3|60.7|81.7|76.1|
+KNN|84.5|61.7|80.6|76.6|
+NAIVE BAYES|77.9|74.4|82.9|76.7|  
+
+![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/9f2319ca-d04c-475c-8a46-172943e3cc42 "Training: ROC Curve Comparison")
        
        
-       
+<!--       
        MODEL
        MODEL EVALUATION - VISUALIZATION
        R2 AND MSE FOR EVALUATION
        PREDICTION AND DECISION MAKING
+       
 
-<!---->
-![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/9f2319ca-d04c-475c-8a46-172943e3cc42 "Training: ROC Curve Comparison")
+-->
+
 
 ![image](https://github.com/anil023/R_Diabetes-Prediction-Model/assets/19195341/8337828a-6de7-4d54-a917-8b80b2f0aaa0 "Testing: ROC Curve Comparison")
 
